@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    docker: 
+      - image: circleci/node:latest
+    filters:
+      branches:
+        only: master
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "e6:aa:46:35:7a:84:bb:35:30:c9:18:37:d2:20:f5:1b"
+      - checkout
+      - run:
+          name: Install
+          command: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: dependencies-
+      - run:
+          name: Build server
+          command: yarn build
+      - run:
+          name: Run deploy scripts
+          command: ./deploy.sh
